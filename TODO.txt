@@ -1,0 +1,8 @@
+- getline() rather than string
+- Map input to ascii values rather than using 1-26
+- Testing for Efficiency
+- Complete RSA decoder for
+    - Include options for when you only have public key
+- RSA key generator, maybe specify size of key or random gen something like that
+- Need to specify the limits of the code within the app
+

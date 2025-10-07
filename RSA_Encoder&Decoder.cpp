@@ -55,14 +55,14 @@ string encode(string encryptString, int encrypt[]) {
             encodedString.push_back(' ');
         }
     }
-    cout << "\nEncoded String: " << encodedString << ", Note that the values in the numeric transformation can\n"
+    cout << "\nEncoded String: " << encodedString << "\n\nNote that the values in the numeric transformation can\n"
                                                      "be larger or less that 1-26, causing misrepresentation within\n"
                                                      "the encoded string please use the numeric output when decrypting";
     cout << endl;
     return encodedString;
 }
 
-string decode(string decryptString, int decrypt[]) {
+/*string decode(string decryptString, int decrypt[]) {
 
     cout << decryptString << decrypt[0] << decrypt[1] << endl;
     vector<int> numericTransformation;
@@ -78,9 +78,29 @@ string decode(string decryptString, int decrypt[]) {
     cout << "\nEncoded String: " << decodedString;
     cout << endl;
     return decodedString;
+}*/
+
+int keygen(int &p, int &q, int &n, int &d, int &e) {
+    int response = 0;
+    cout << "Do you have your own values for p and q?\n1. Yes\n2. No\nResponse: ";
+    cin >> response;
+    switch (response) {
+        case 1:
+            cout << "Input p: ";
+            cin >> p;
+            cout << "Input q: ";
+            cin >> q;
+            break;
+
+        case 2:
+            cout << "No";
+            break;
+
+    }
+
+
+return p, q, n, d, e;
 }
-
-
 
 
 int main() {
@@ -92,14 +112,14 @@ int main() {
 
 
     cout << "RSA (Rivest Shamir Adelman) Encoder and Decoder App"
-    "\nWould you like to encrypt or decrypt your message?"
-    "\n1. Encrypt\n2. Decrypt\nSelection: ";
+    "\nWould you like to encrypt or decrypt your message? \nYou can also generate your own RSA key set"
+    "\n1. Encrypt\n2. Decrypt\n3. Generate RSA Keys\nSelection: ";
     cin >> selection;
     cin.clear();
     cin.ignore(10000, '\n');
 
-    while (selection != 1 && selection != 2) {
-        cout << "\n\nInvalid Selection, Try Again: \n1. Encrypt\n2. Decrypt\nSelection: ";
+    while (selection != 1 && selection != 2 && selection != 3) {
+        cout << "\n\nInvalid Selection, Try Again: \n1. Encrypt\n2. Decrypt\n3. Generate Keys\nSelection: ";
         cin >> selection;
         cin.clear();
         cin.ignore(10000, '\n');
@@ -107,7 +127,7 @@ int main() {
 
     switch (selection) {
         case 1:
-            cout << "\nEncrypt 1"
+            cout << "\nRSA Encryption"
             "\nFor the public key (e, n) enter the integer value for e: ";
 
             while (!(cin >> encrypt[0])) {
@@ -115,21 +135,26 @@ int main() {
                 cin.clear();
                 cin.ignore(10000, '\n');
             }
-            cout << "\nNow for the public key (e, n) enter the integer value for n: ";
+            cout << "Now for the public key (e, n) enter the integer value for n: ";
 
             while (!(cin >> encrypt[1])) {
                 cout << "Ensure the value for n is an integer: ";
                 cin.clear();
                 cin.ignore(10000, '\n');
             }
-            cout  << "\n\nInput the alpha numeric string to encrypt [a-z]: ";
+            cout  << "Input the alpha numeric string to encrypt [a-z]: ";
             cin >> encryptString;
             encode(encryptString, encrypt);
             break;
 //WIP
         case 2:
-            cout << "\nDecrypt 2"
-            "\nFor the private key (d, n) enter the integer value for d: ";
+            cout << "\nRSA Decryption";
+
+
+
+
+/*
+            cout << "\nFor the private key (d, n) enter the integer value for d: ";
 
             while (!(cin >> decrypt[0])) {
                 cout << "Ensure the value for d is an integer: ";
@@ -149,6 +174,17 @@ int main() {
             cin >> decryptString;
 
             decode(decryptString, decrypt);
+            */
+            break;
+
+        case 3:
+            cout << "\nRSA Key Generation\n";
+            int p, q, n, d, e;
+            p = q = n = d = e = 0;
+            keygen(p, q, n, d, e);
+
+            cout << "\np: " << p << ", q: " << q << ", n: " << n << ", d: " << d << ", e: " << e;
+
             break;
 
     }
