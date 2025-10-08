@@ -5,28 +5,32 @@
 //Part 1: https://youtu.be/4zahvcJ9glg?si=royT9xRM5mkBgZk0
 //Part 2: https://youtu.be/oOcTVTpUsPQ?si=j8zTFfKQvDq5bi0S
 
+//https://www.cryptool.org/en/cto/rsa-step-by-step/
+
 //
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <numeric>
 
 //sqr mult comp 5 vid
 
 using namespace std;
+using lint = long long int;
 
-int modPow(int base, int exponent, int modulus) {
-    int result = 1;
+lint modPow(lint base, lint exponent, lint modulus) {
+    lint result = 1;
     base = base % modulus;
-    for (int i = 0; i < exponent; i++) {
+    for (lint i = 0; i < exponent; i++) {
         result = (result * base) % modulus;
     }
     return result;
 }
 
-string encode(string encryptString, int encrypt[]) {
+string encode(string encryptString, lint encrypt[]) {
     cout << encryptString << encrypt[0] << encrypt[1] << endl;
-    vector<int> numericTranslation;
-    vector<int> numericTransformation;
+    vector<lint> numericTranslation;
+    vector<lint> numericTransformation;
     string encodedString;
 
     for (char c : encryptString) {
@@ -37,17 +41,17 @@ string encode(string encryptString, int encrypt[]) {
         }
     }
     cout << "Numeric translation: ";
-    for (int num : numericTranslation) {
+    for (lint num : numericTranslation) {
         cout << num << " ";
         if (num >= 1) {
             numericTransformation.push_back(modPow(num, encrypt[0], encrypt[1]));
         }
     }
     cout << "\nNumeric transformation: ";
-    for (int num : numericTransformation) {
+    for (lint num : numericTransformation) {
         cout << num << " ";
     }
-    for (int num : numericTransformation) {
+    for (lint num : numericTransformation) {
         if (num >= 1 && num <= 26) {
             char c = 'a' + (num - 1);
             encodedString.push_back(c);
@@ -62,14 +66,14 @@ string encode(string encryptString, int encrypt[]) {
     return encodedString;
 }
 
-/*string decode(string decryptString, int decrypt[]) {
+/*string decode(string decryptString, lint decrypt[]) {
 
     cout << decryptString << decrypt[0] << decrypt[1] << endl;
-    vector<int> numericTransformation;
+    vector<lint> numericTransformation;
     string decodedString;
 
     cout << "\nNumeric transformation: ";
-    for (int num : decryptString) {
+    for (lint num : decryptString) {
         cout << num << " ";
         if (num >= 1) {
             numericTransformation.push_back(modPow(num, decrypt[0], decrypt[1]));
@@ -80,8 +84,9 @@ string encode(string encryptString, int encrypt[]) {
     return decodedString;
 }*/
 
-int keygen(int &p, int &q, int &n, int &d, int &e) {
-    int response = 0;
+lint keygen(lint &p, lint &q, lint &n, lint &d, lint &e) {
+    lint response = 0;
+    lint eco = 0;
     cout << "Do you have your own values for p and q?\n1. Yes\n2. No\nResponse: ";
     cin >> response;
     switch (response) {
@@ -90,6 +95,28 @@ int keygen(int &p, int &q, int &n, int &d, int &e) {
             cin >> p;
             cout << "Input q: ";
             cin >> q;
+            n = p * q;
+            eco = (p-1) * (q-1);
+            cout << "Choose a value for e, noting that it must be coprime to " << eco << ": ";
+            cin >> e;
+            while (true) {
+                while (!(cin>>e)) {
+                    cout << "Ensure the value for e is an integer: ";
+                    cin.clear();
+                    cin.ignore(10000, '\n');
+                }
+                if (gcd(e, eco) == 1) {
+                    break;
+                } else {
+                    cout << "Ensure the value for e is coprime to " << eco << ": ";
+                }
+            }
+            //(e*d) mod (phi(n)) = 1
+            //d= e^−1 * modφ(n)
+            d = (lint) pow(e, -1) % eco;
+
+
+
             break;
 
         case 2:
@@ -104,9 +131,9 @@ return p, q, n, d, e;
 
 
 int main() {
-    int encrypt[2]; //(e,n)
-    int decrypt[2]; //(d,n)
-    int selection;
+    lint encrypt[2]; //(e,n)
+    lint decrypt[2]; //(d,n)
+    lint selection;
     string encryptString, decryptString;
 
 
@@ -154,18 +181,18 @@ int main() {
 
 
 /*
-            cout << "\nFor the private key (d, n) enter the integer value for d: ";
+            cout << "\nFor the private key (d, n) enter the linteger value for d: ";
 
             while (!(cin >> decrypt[0])) {
-                cout << "Ensure the value for d is an integer: ";
+                cout << "Ensure the value for d is an linteger: ";
                 cin >> decrypt[0];
                 cin.clear();
                 cin.ignore(10000, '\n');
             }
-            cout << "\nNow for the key (d, n) enter the integer value for n: ";
+            cout << "\nNow for the key (d, n) enter the linteger value for n: ";
 
             while (!(cin >> decrypt[1])) {
-                cout << "Ensure the value for n is an integer: ";
+                cout << "Ensure the value for n is an linteger: ";
                 cin >> decrypt[1];
                 cin.clear();
                 cin.ignore(10000, '\n');
@@ -179,7 +206,7 @@ int main() {
 
         case 3:
             cout << "\nRSA Key Generation\n";
-            int p, q, n, d, e;
+            lint p, q, n, d, e;
             p = q = n = d = e = 0;
             keygen(p, q, n, d, e);
 
